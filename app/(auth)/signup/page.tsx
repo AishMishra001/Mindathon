@@ -1,5 +1,8 @@
+import SignupFormDemo from "@/components/signup-form-demo";
+
 export default function Signin(){
-  return <div className="w-screen h-screen bg-black">
-    
-  </div>
+  return <div className="flex w-screen h-screen items-center justify-center">
+   
+    <SignupFormDemo/>
+    </div>
 }
