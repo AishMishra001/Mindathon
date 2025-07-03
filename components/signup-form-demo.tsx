@@ -1,14 +1,20 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "./lib/utils";
+import axios from 'axios' ; 
 import {
   IconBrandGoogle,
 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
 export default function SignupFormDemo() {
+
+  const [firstname , setFirstname] = useState("")
+  const [lastname , setLastname] = useState("")
+  const [email , setEmail] = useState("")
+  const [password , setPassword] = useState("")
 
   const router = useRouter() ; 
 
@@ -25,24 +31,36 @@ export default function SignupFormDemo() {
         <div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
           <LabelInputContainer>
             <Label htmlFor="firstname">First name</Label>
-            <Input id="firstname" placeholder="Tyler" type="text" />
+            <Input id="firstname" placeholder="Tyler" type="text" onChange={e=>setFirstname(e.target.value)}/>
           </LabelInputContainer>
           <LabelInputContainer>
             <Label htmlFor="lastname">Last name</Label>
-            <Input id="lastname" placeholder="Durden" type="text" />
+            <Input id="lastname" placeholder="Durden" type="text" onChange={e=>{
+              setLastname(e.target.value)
+            }}/>
           </LabelInputContainer>
         </div>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
-          <Input id="email" placeholder="projectmayhem@fc.com" type="email" />
+          <Input id="email" placeholder="projectmayhem@fc.com" type="email" onChange={e=>{
+            setEmail(e.target.value)
+          }}/>
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" placeholder="••••••••" type="password" />
+          <Input id="password" placeholder="••••••••" type="password" onChange={e=>{
+            setPassword(e.target.value)
+          }}/>
         </LabelInputContainer>
 
         <button onClick={
           ()=>{
+            axios.post("http://localhost:3000/api/v1/user",{
+              firstname,
+              lastname, 
+              email , 
+              password 
+            })
             router.push('/pages/home') ; 
           }
         }
