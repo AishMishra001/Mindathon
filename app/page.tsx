@@ -1,20 +1,15 @@
-"use client"
-import { useRouter } from "next/navigation"
+import { getServerSession } from "next-auth"
+import { SessionProvider, signIn, signOut, useSession } from "next-auth/react"
 
-export default function Home(){
+export default async function Home(){
 
-  const router = useRouter() ; 
+  console.log("NEXTAUTH_URL", process.env.NEXTAUTH_URL);
+  console.log("NEXTAUTH_SECRET", process.env.NEXTAUTH_SECRET);
 
-  return <div className="w-screen h-screen bg-black flex flex-col gap-2 justify-center items-center text-white">
-    <div className="text-5xl">
-    Mind-A-Thon
-    </div>
-    <button onClick={
-      ()=>{
-            router.push('/signup') ; 
-      }
-    } className="px-4 py-2 border-white border-2 rounded-full">
-       Join
-    </button>
+  const session = await getServerSession() ; 
+  return <div>
+    {JSON.stringify(session)}
   </div>
+
 }
+
