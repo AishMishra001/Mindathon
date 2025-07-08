@@ -13,6 +13,8 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import {
+  Award,
+  BookOpenCheck,
   Calendar,
   ChevronUp,
   Home,
@@ -20,6 +22,7 @@ import {
   Plus,
   Search,
   Settings,
+  Trophy,
   User2,
 } from "lucide-react";
 import Image from "next/image";
@@ -34,23 +37,23 @@ import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/user/dashboard",
     icon: Home,
   },
   {
-    title: "Inbox",
+    title: "Input",
     url: "#",
-    icon: Inbox,
+    icon: BookOpenCheck ,
   },
   {
-    title: "Calendar",
+    title: "Leaderboard",
     url: "#",
-    icon: Calendar,
+    icon: Trophy ,
   },
   {
-    title: "Search",
+    title: "Test",
     url: "#",
-    icon: Search,
+    icon: Award,
   },
   {
     title: "Settings",
@@ -68,13 +71,13 @@ export function AppSidebar() {
             <SidebarMenuButton asChild>
               <Link href="/" className="flex items-center gap-2">
                 <Image
-                  src="/favicon.ico"
+                  src="/Mindathon_logo.png"
                   alt="logo"
                   width={24}
                   height={24}
                   className="sidebar-logo"
                 />
-                <span className="sidebar-label">DashApp</span>
+                <span className="sidebar-label">Mind-A-Thon</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

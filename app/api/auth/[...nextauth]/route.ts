@@ -39,7 +39,7 @@ export const handler = NextAuth({
     async redirect({ url, baseUrl }) {
       // Redirect to dashboard after successful sign in
       if (url === baseUrl) {
-        return `${baseUrl}/user/dashboard`
+        return `${baseUrl}/user/dashboard/home`
       }
       // Allow relative callback URLs
       if (url.startsWith("/")) {
@@ -50,7 +50,7 @@ export const handler = NextAuth({
         return url
       }
       // Default fallback
-      return `${baseUrl}/user/dashboard`
+      return `${baseUrl}/user/dashboard/home`
     }
   },
   pages: {
