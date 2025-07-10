@@ -8,10 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id  Int  @default(autoincrement())  @id  
-  firstname String
-  lastname String 
-  email String
-  password String 
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String?
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
