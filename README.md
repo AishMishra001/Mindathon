@@ -12,3 +12,14 @@ https://www.notion.so/Marathon-platform-21b745d6ed5e807296c6feb85f1debf1
 ![Alt Text](./Images/image2.png)
 ![Alt Text](./Images/image3.png)
 ![Alt Text](./Images/image4.png)
+
+
+input form : 
+
+Reading book 
+reading topic 
+mins of reading 
+what u learning 
+date 
+any questions 
+submit

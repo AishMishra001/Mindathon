@@ -42,8 +42,8 @@ export default function Dashboard(){
         description="Your daily reading log"
       />
     </div>
-    <div className="rounded-xl p-4 bg-primary-foreground">test</div>
-    <div className="rounded-xl p-4 bg-primary-foreground">test</div>
-    <div className="rounded-xl p-4 col-span-2 bg-primary-foreground">test</div>
+    <div className="rounded-xl p-4 bg-primary-foreground">Streaks</div>
+    <div className="rounded-xl p-4 bg-primary-foreground">Test reminder</div>
+    <div className="rounded-xl p-4 col-span-2 bg-primary-foreground">leaderboard</div>
   </div>
 }

@@ -42,7 +42,7 @@ const items = [
   },
   {
     title: "Input",
-    url: "#",
+    url: "/user/dashboard/input",
     icon: BookOpenCheck ,
   },
   {
