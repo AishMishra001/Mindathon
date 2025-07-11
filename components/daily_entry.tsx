@@ -3,24 +3,37 @@ import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "../app/lib/utils";
-import axios from 'axios';
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import {
   Popover,
   PopoverTrigger,
-  PopoverContent
+  PopoverContent,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
+import { SessionProvider, useSession } from "next-auth/react";
 
-export default function FromInputField() {
+
+export default function DailyEntry(){
+  return <SessionProvider>
+     <FromInputField/>
+  </SessionProvider>
+}
+
+
+  function FromInputField() {
+  const { data: session } = useSession();
+  // @ts-ignore
+  const userId = session?.user?.id;
+
   const [readingBook, setReadingBook] = useState("");
   const [readingTopic, setReadingTopic] = useState("");
   const [readingMinutes, setReadingMinutes] = useState(0);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [time, setTime] = useState("10:30:00");
-  const [learnings, setLearnings] = useState("");
+  const [learning, setLearnings] = useState("");
   const [questions, setQuestions] = useState("");
 
   const router = useRouter();
@@ -37,18 +50,19 @@ export default function FromInputField() {
       readingTopic,
       readingMinutes,
       dateTime,
-      learnings,
-      questions
+      learning,
+      questions,
     });
 
     try {
       await axios.post("http://localhost:3000/api/v1/user", {
+        userId ,  
         readingBook,
         readingTopic,
         readingMinutes,
         dateTime,
-        learnings,
-        questions
+        learning,
+        questions,
       });
 
       router.push("/user/dashboard");
@@ -62,22 +76,33 @@ export default function FromInputField() {
       <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
         Welcome to Mindathon
       </h2>
-      <h4 className="text-neutral-800 dark:text-neutral-200">Add your daily logs</h4>
+      <h4 className="text-neutral-800 dark:text-neutral-200">
+        Add your daily logs
+      </h4>
       <form className="my-8" onSubmit={handleSubmit}>
-
         <LabelInputContainer className="mb-4">
           <Label>Reading Book</Label>
-          <Input placeholder="Bhagwat Geeta As it is" onChange={(e) => setReadingBook(e.target.value)} />
+          <Input
+            placeholder="Bhagwat Geeta As it is"
+            onChange={(e) => setReadingBook(e.target.value)}
+          />
         </LabelInputContainer>
 
         <LabelInputContainer className="mb-4">
           <Label>Reading Topic</Label>
-          <Input placeholder="Adhyay 2 Karma Yog" onChange={(e) => setReadingTopic(e.target.value)} />
+          <Input
+            placeholder="Adhyay 2 Karma Yog"
+            onChange={(e) => setReadingTopic(e.target.value)}
+          />
         </LabelInputContainer>
 
         <LabelInputContainer className="mb-4">
           <Label>Reading Minutes</Label>
-          <Input type="number" placeholder="60" onChange={(e) => setReadingMinutes(Number(e.target.value))} />
+          <Input
+            type="number"
+            placeholder="60"
+            onChange={(e) => setReadingMinutes(Number(e.target.value))}
+          />
         </LabelInputContainer>
 
         {/* 📅 Date and ⏰ Time Picker */}
@@ -86,7 +111,10 @@ export default function FromInputField() {
             <Label>Date</Label>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-32 justify-between font-normal">
+                <Button
+                  variant="outline"
+                  className="w-32 justify-between font-normal"
+                >
                   {date ? date.toLocaleDateString() : "Select date"}
                   <ChevronDownIcon className="ml-2 h-4 w-4" />
                 </Button>
@@ -116,12 +144,18 @@ export default function FromInputField() {
 
         <LabelInputContainer className="mb-4">
           <Label>Your Learnings</Label>
-          <Input placeholder="Krishna is supreme personality of godhead" onChange={(e) => setLearnings(e.target.value)} />
+          <Input
+            placeholder="Krishna is supreme personality of godhead"
+            onChange={(e) => setLearnings(e.target.value)}
+          />
         </LabelInputContainer>
 
         <LabelInputContainer className="mb-4">
           <Label>Any Questions?</Label>
-          <Input placeholder="Vishnu is supreme or Krishna?" onChange={(e) => setQuestions(e.target.value)} />
+          <Input
+            placeholder="Vishnu is supreme or Krishna?"
+            onChange={(e) => setQuestions(e.target.value)}
+          />
         </LabelInputContainer>
 
         <button
@@ -131,7 +165,6 @@ export default function FromInputField() {
           Submit &rarr;
           <BottomGradient />
         </button>
-
       </form>
     </div>
   );

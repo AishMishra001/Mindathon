@@ -1,8 +1,8 @@
-import FromInputField from "@/components/signup-form-demo";
+import DailyEntry from "@/components/daily_entry";
 import { Card } from "@/components/ui/card";
 
 export default function Input(){
   return <Card className="h-screen w-screen">
-   <FromInputField/>
+   <DailyEntry/>
   </Card>
 }

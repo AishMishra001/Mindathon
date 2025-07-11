@@ -13,9 +13,12 @@ import {
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { SidebarTrigger } from "./ui/sidebar";
+import { prisma } from "@/app/lib/prisma";
 
 
 const Navbar = () => {
+
+
   
   const {setTheme} = useTheme() ; 
 
