@@ -19,7 +19,13 @@ export const authOptions: NextAuthOptions = {
         adminpassword: { label: "Admin Password", type: "password" },
       },
       async authorize(credentials) {
-        const { firstname, lastname, email, password, adminpassword } = credentials as any;
+        const { firstname, lastname, email, password, adminpassword } = credentials as {
+          firstname?: string;
+          lastname?: string;
+          email: string;
+          password: string;
+          adminpassword?: string;
+        };
 
         if (!email || !password) return null;
 
@@ -65,7 +71,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }: { token: JWT; user?: User }) {
       if (user) {
         token.id = user.id;
-        token.isAdmin = (user as any).isAdmin;
+        token.isAdmin = (user as User & { isAdmin?: boolean })?.isAdmin;
       }
       return token;
     },
