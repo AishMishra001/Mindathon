@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
 
-export default function UserDashboardLayout({
+export default function AdminDashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

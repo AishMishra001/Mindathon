@@ -1,11 +1,11 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/app/lib/prisma";
 import bcrypt from "bcryptjs";
-import { Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -18,33 +18,73 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
         adminpassword: { label: "Admin Password", type: "password" },
       },
-      async authorize(credentials) {
-        const { firstname, lastname, email, password, adminpassword } = credentials as {
-          firstname?: string;
-          lastname?: string;
-          email: string;
-          password: string;
-          adminpassword?: string;
-        };
+      authorize: async (credentials) => {
+        const { firstname, lastname, email, password, adminpassword } =
+          credentials as {
+            firstname?: string;
+            lastname?: string;
+            email: string;
+            password: string;
+            adminpassword?: string;
+          };
+
+        console.log("🧪 Credentials received:", {
+          email,
+          password,
+          adminpassword,
+        });
 
         if (!email || !password) return null;
 
         let user = await prisma.user.findUnique({ where: { email } });
+        console.log("🔍 Fetched user:", user);
 
         if (!user) {
+          console.log("👶 Creating user...");
+
           const hashedPassword = await bcrypt.hash(password, 10);
-          user = await prisma.user.create({
-            data: {
-              email,
-              name: `${firstname} ${lastname}`,
-              password: hashedPassword,
-              isAdmin: adminpassword === "Keshav",
-            },
-          });
+          const isAdmin = adminpassword === "Keshav";
+
+          const safeFirstname = firstname || "Anonymous";
+          const safeLastname = lastname || "User";
+
+          try {
+            user = await prisma.user.create({
+              data: {
+                email,
+                name: `${safeFirstname} ${safeLastname}`,
+                password: hashedPassword,
+                isAdmin,
+              },
+            });
+          } catch (err) {
+            console.error("❌ Failed to create user:", err);
+            return null;
+          }
         } else {
           const isValid = await bcrypt.compare(password, user.password || "");
-          if (!isValid) return null;
+
+          if (!isValid) {
+            console.log("⛔ Invalid password");
+            return null;
+          }
+
+          const isTryingAdmin = Boolean(adminpassword);
+          const isCorrectAdmin = adminpassword === "Keshav";
+
+          if (isTryingAdmin && !isCorrectAdmin) {
+            console.log(
+              "⚠️ Incorrect admin password — treating as regular user"
+            );
+            user.isAdmin = false;
+          }
         }
+
+        console.log("✅ Auth success:", {
+          id: user.id,
+          email: user.email,
+          isAdmin: user.isAdmin,
+        });
 
         return {
           id: user.id,
@@ -84,9 +124,23 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async redirect() {
-      return "/user/dashboard";
+    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+      // Check if the callbackUrl includes a hint about admin status
+      const parsedUrl = new URL(url, baseUrl);
+      const isAdmin = parsedUrl.searchParams.get("admin") === "true";
+
+      console.log("Redirect callback:", { url, baseUrl, isAdmin });
+
+      // Construct absolute URLs
+      const adminUrl = new URL("/admin/dashboard", baseUrl).toString();
+      const userUrl = new URL("/user/dashboard", baseUrl).toString();
+
+      // Redirect based on isAdmin status
+      return isAdmin ? adminUrl : userUrl;
     },
+  },
+  pages: {
+    signIn: "/auth/signin",
   },
 };
 
