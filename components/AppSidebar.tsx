@@ -15,12 +15,9 @@ import {
 import {
   Award,
   BookOpenCheck,
-  Calendar,
   ChevronUp,
   Home,
-  Inbox,
   Plus,
-  Search,
   Settings,
   Trophy,
   User2,

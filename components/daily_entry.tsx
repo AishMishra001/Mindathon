@@ -25,7 +25,6 @@ export default function DailyEntry(){
 
   function FromInputField() {
   const { data: session } = useSession();
-  // @ts-ignore
   const userId = session?.user?.id;
 
   const [readingBook, setReadingBook] = useState("");

@@ -1,11 +1,19 @@
 import { prisma } from "@/app/lib/prisma";
 import { NextRequest } from "next/server";
 
+type ReadingLogRequest = {
+  readingBook: string;
+  readingTopic: string;
+  readingMinutes: number;
+  dateTime: string; // Note: `req.json()` gives you a string, not a Date object
+  learning: string;
+  questions: string;
+  userId: string;
+};
+
 export async function POST(req: NextRequest) {
   try {
-    const data = await req.json();
-
-    console.log("Received data:", data);
+    const data: ReadingLogRequest = await req.json();
 
     const {
       readingBook,
@@ -14,37 +22,32 @@ export async function POST(req: NextRequest) {
       dateTime,
       learning,
       questions,
-      userId, // must be passed from frontend
-    } = data as {
-      readingBook: string;
-      readingTopic: string;
-      readingMinutes: number;
-      dateTime: Date;
-      learning: string;
-      questions: string;
-      userId: string;
-    };
+      userId,
+    } = data;
 
     const newLog = await prisma.readingLog.create({
       data: {
         readingBook,
         readingTopic,
         readingMinutes,
-        dateTime,
+        dateTime: new Date(dateTime), // ✅ Convert string to Date
         learning,
         questions,
-        user : {
-          connect : {id : userId}
+        user: {
+          connect: { id: userId },
         },
       },
     });
 
-    return new Response(JSON.stringify({ message: "Log Created !!", log : newLog  }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return new Response(
+      JSON.stringify({ message: "Log Created !!", log: newLog }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.error("Error handling request:", error);
 
