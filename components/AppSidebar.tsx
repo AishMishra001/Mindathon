@@ -44,17 +44,17 @@ const items = [
   },
   {
     title: "Leaderboard",
-    url: "#",
+    url: "/user/dashboard/leaderboard",
     icon: Trophy ,
   },
   {
     title: "Test",
-    url: "#",
+    url: "/user/dashboard/test",
     icon: Award,
   },
   {
     title: "Settings",
-    url: "#",
+    url: "/user/dashboard/setting",
     icon: Settings,
   },
 ];
