@@ -62,6 +62,7 @@ export default function DailyEntry(){
         dateTime,
         learning,
         questions,
+        metTarget : readingMinutes>=60 
       });
 
       router.push("/user/dashboard");
@@ -100,7 +101,10 @@ export default function DailyEntry(){
           <Input
             type="number"
             placeholder="60"
-            onChange={(e) => setReadingMinutes(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value) ; 
+              setReadingMinutes(value) ; 
+            }}
           />
         </LabelInputContainer>
 
@@ -135,7 +139,9 @@ export default function DailyEntry(){
               type="time"
               step="1"
               defaultValue={time}
-              onChange={(e) => setTime(e.target.value)}
+              onChange={
+                (e) => setTime(e.target.value)
+              }
               className="bg-background"
             />
           </div>
