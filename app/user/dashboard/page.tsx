@@ -1,7 +1,7 @@
 "use client";
 import { ReadingProgressChart } from "@/components/AppBarChart";
 import StreakCalendar from "@/components/StreakCalender";
-import { Calendar } from "@/components/ui/calendar";
+import TestReminder from "@/components/TestReminder";
 import { SessionProvider } from "next-auth/react";
 import React from "react";
 
@@ -57,7 +57,9 @@ export default function Dashboard() {
         </SessionProvider>
       </div>
 
-      <div className="rounded-xl p-4 bg-primary-foreground">Test reminder</div>
+      <div className="rounded-xl p-4 bg-primary-foreground flex flex-col h-full min-h-[400px]">
+        <TestReminder/>
+      </div>
 
       <div className="rounded-xl p-4 md:col-span-2 bg-primary-foreground">
         leaderboard
