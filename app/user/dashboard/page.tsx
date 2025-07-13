@@ -1,4 +1,5 @@
 "use client";
+import DashboardLeaderboard from "@/components/Dashboard-Leaderboard";
 import ReadingProgressChartWrapper from "@/components/ReadingProgressChartWrapper";
 import StreakCalendar from "@/components/StreakCalender";
 import TestReminder from "@/components/TestReminder";
@@ -19,7 +20,7 @@ export default function Dashboard() {
       </div>
 
       <div className="rounded-xl p-4 md:col-span-2 bg-primary-foreground">
-        leaderboard
+        <DashboardLeaderboard/>
       </div>
     </div>
   );
