@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import axios from "axios"
 import { Trophy, Medal, Award, Clock, Users, TrendingUp } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface LeaderboardEntry {
   _sum: {
@@ -32,6 +33,7 @@ export default function DashboardLeaderboard() {
   const [leaderboardData, setLeaderboardData] = useState<ProcessedEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter() ; 
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -244,7 +246,9 @@ export default function DashboardLeaderboard() {
 
       {/* View All Link */}
       <div className="mt-3 pt-3 border-t">
-        <button className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <button onClick={()=>
+            router.push("/user/dashboard/leaderboard")
+        } className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
           View Full Leaderboard →
         </button>
       </div>
