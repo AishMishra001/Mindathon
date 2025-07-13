@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   try {
     //  Return leaderboard data
     if (type === "leaderboard") {
-      const leaderboard = await prisma.readingLog.groupBy({
+      const grouped = await prisma.readingLog.groupBy({
         by: ["userId"],
         _sum: {
           readingMinutes: true,
@@ -26,6 +26,24 @@ export async function GET(req: NextRequest) {
           },
         },
       });
+
+      // Get user details for those userIds
+      const userIds = grouped.map((entry) => entry.userId);
+
+      const users = await prisma.user.findMany({
+        where: { id: { in: userIds } },
+        select: { id: true, name: true },
+      });
+
+      const userMap = new Map(
+        users.map((user) => [user.id, user.name || "Unnamed"])
+      );
+
+      const leaderboard = grouped.map((entry) => ({
+        userId: entry.userId,
+        name: userMap.get(entry.userId),
+        totalReadingMinutes: entry._sum.readingMinutes ?? 0,
+      }));
 
       return new Response(JSON.stringify({ leaderboard }), {
         status: 200,
