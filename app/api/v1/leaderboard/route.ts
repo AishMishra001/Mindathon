@@ -27,20 +27,24 @@ export async function GET(req: NextRequest) {
         },
       });
 
-      const userIds = grouped.map((entry : {
-        userId : string
-      }) => entry.userId);
+      const userIds: string[] = grouped.map(
+        (entry: { userId: string }) => entry.userId
+      );
 
       const users = await prisma.user.findMany({
         where: { id: { in: userIds } },
         select: { id: true, name: true },
       });
 
-      const userMap = new Map(
+      const userMap: Map<string, string> = new Map(
         users.map((user) => [user.id, user.name || "Unnamed"])
       );
 
-      const leaderboard = grouped.map((entry) => ({
+      const leaderboard: {
+        userId: string;
+        name: string | undefined;
+        totalReadingMinutes: number;
+      }[] = grouped.map((entry) => ({
         userId: entry.userId,
         name: userMap.get(entry.userId),
         totalReadingMinutes: entry._sum.readingMinutes ?? 0,
@@ -64,10 +68,12 @@ export async function GET(req: NextRequest) {
         },
       });
 
-      const formatted = logs.map((log) => ({
-        date: log.dateTime.toISOString().split("T")[0],
-        minutes: log.readingMinutes,
-      }));
+      const formatted: { date: string; minutes: number }[] = logs.map(
+        (log) => ({
+          date: log.dateTime.toISOString().split("T")[0],
+          minutes: log.readingMinutes,
+        })
+      );
 
       return new Response(JSON.stringify({ logs: formatted }), {
         status: 200,
