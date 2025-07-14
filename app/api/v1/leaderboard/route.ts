@@ -27,7 +27,9 @@ export async function GET(req: NextRequest) {
         },
       });
 
-      const userIds = grouped.map((entry) => entry.userId);
+      const userIds = grouped.map((entry : {
+        userId : string
+      }) => entry.userId);
 
       const users = await prisma.user.findMany({
         where: { id: { in: userIds } },
