@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String?
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ReadingLog ReadingLog[]
+}
+
+model ReadingLog {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  readingBook    String
+  readingTopic   String
+  readingMinutes Int
+  dateTime       DateTime
+  learning       String?
+  questions      String?
+  metTarget      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
