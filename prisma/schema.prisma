@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "./app/generated/prisma"
 }
 
 datasource db {
@@ -28,7 +27,8 @@ model ReadingLog {
   readingBook    String
   readingTopic   String
   readingMinutes Int
-  dateTime       DateTime  
+  dateTime       DateTime
+
   learning       String?
   questions      String?
   metTarget      Boolean @default(false)
