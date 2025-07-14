@@ -15,16 +15,18 @@ import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import { SessionProvider, useSession } from "next-auth/react";
 
-
-export default function DailyEntry(){
-  return <SessionProvider>
-     <FromInputField/>
-  </SessionProvider>
+export default function DailyEntry() {
+  return (
+    <SessionProvider>
+      <FromInputField />
+    </SessionProvider>
+  );
 }
 
-
-  function FromInputField() {
-  const { data: session } = useSession();
+function FromInputField() {
+  const { data: session, status } = useSession();
+  if (status === "loading") return <p>Loading...</p>;
+  if (!session?.user?.id) return <p>User not authenticated.</p>;
   const userId = session?.user?.id;
 
   const [readingBook, setReadingBook] = useState("");
@@ -55,14 +57,14 @@ export default function DailyEntry(){
 
     try {
       await axios.post("https://mindathon.vercel.app/api/v1/user", {
-        userId ,  
+        userId,
         readingBook,
         readingTopic,
         readingMinutes,
         dateTime,
         learning,
         questions,
-        metTarget : readingMinutes>=60 
+        metTarget: readingMinutes >= 60,
       });
 
       router.push("/user/dashboard");
@@ -102,8 +104,8 @@ export default function DailyEntry(){
             type="number"
             placeholder="60"
             onChange={(e) => {
-              const value = Number(e.target.value) ; 
-              setReadingMinutes(value) ; 
+              const value = Number(e.target.value);
+              setReadingMinutes(value);
             }}
           />
         </LabelInputContainer>
@@ -139,9 +141,7 @@ export default function DailyEntry(){
               type="time"
               step="1"
               defaultValue={time}
-              onChange={
-                (e) => setTime(e.target.value)
-              }
+              onChange={(e) => setTime(e.target.value)}
               className="bg-background"
             />
           </div>
