@@ -13,13 +13,11 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
-import { SessionProvider, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 export default function DailyEntry() {
   return (
-    <SessionProvider>
       <FromInputField />
-    </SessionProvider>
   );
 }
 

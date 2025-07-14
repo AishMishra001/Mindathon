@@ -1,8 +1,13 @@
+import { authOptions } from "@/app/lib/authOptions";
 import DailyEntry from "@/components/daily_entry";
-import { Card } from "@/components/ui/card";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function Input(){
-  return <Card className="h-screen w-screen">
-   <DailyEntry/>
-  </Card>
+export default async function Page() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    redirect("/auth/signin");
+  }
+
+  return <DailyEntry />;
 }
