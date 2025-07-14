@@ -87,7 +87,7 @@ export function ReadingProgressChart({
                 <ChartTooltipContent
                   className="w-[150px]"
                   nameKey="minutes"
-                  labelFormatter={(value) => {
+                  labelFormatter={(value : string | number) => {
                     return new Date(value).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
