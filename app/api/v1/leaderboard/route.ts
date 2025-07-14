@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
       });
 
       const userMap: Map<string, string> = new Map(
-        users.map((user) => [user.id, user.name || "Unnamed"])
+        users.map((user : { id : string , name : string | null}) => [user.id, user.name || "Unnamed"])
       );
 
       const leaderboard: {
