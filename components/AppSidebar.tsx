@@ -1,3 +1,4 @@
+"use client"
 import {
   Sidebar,
   SidebarContent,
@@ -17,8 +18,8 @@ import {
   BookOpenCheck,
   ChevronUp,
   Home,
+  Lightbulb,
   Plus,
-  Settings,
   Trophy,
   User2,
 } from "lucide-react";
@@ -53,9 +54,9 @@ const items = [
     icon: Award,
   },
   {
-    title: "Settings",
-    url: "/user/dashboard/setting",
-    icon: Settings,
+    title: "Book Suggestions",
+    url: "/user/dashboard/suggestions",
+    icon: Lightbulb,
   },
 ];
 
