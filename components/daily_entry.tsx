@@ -54,7 +54,7 @@ export default function DailyEntry(){
     });
 
     try {
-      await axios.post("http://localhost:3000/api/v1/user", {
+      await axios.post("https://mindathon.vercel.app/api/v1/user", {
         userId ,  
         readingBook,
         readingTopic,

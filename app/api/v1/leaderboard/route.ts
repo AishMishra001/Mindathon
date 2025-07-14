@@ -39,11 +39,18 @@ export async function GET(req: NextRequest) {
         users.map((user) => [user.id, user.name || "Unnamed"])
       );
 
-      const leaderboard = grouped.map((entry) => ({
-        userId: entry.userId,
-        name: userMap.get(entry.userId),
-        totalReadingMinutes: entry._sum.readingMinutes ?? 0,
-      }));
+      const leaderboard = grouped.map(
+        (entry: {
+          userId: string;
+          _sum: {
+            readingMinutes: number | null;
+          };
+        }) => ({
+          userId: entry.userId,
+          name: userMap.get(entry.userId),
+          totalReadingMinutes: entry._sum.readingMinutes ?? 0,
+        })
+      );
 
       return new Response(JSON.stringify({ leaderboard }), {
         status: 200,

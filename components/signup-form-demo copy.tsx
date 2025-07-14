@@ -55,7 +55,7 @@ export default function SignupFormDemo() {
 
         <button onClick={
           ()=>{
-            axios.post("http://localhost:3000/api/v1/user",{
+            axios.post("https://mindathon/api/v1/user",{
               firstname,
               lastname, 
               email , 
