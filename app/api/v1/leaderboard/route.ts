@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
       });
 
       const formatted: { date: string; minutes: number }[] = logs.map(
-        (log) => ({
+        (log: { dateTime: Date; readingMinutes: number }) => ({
           date: log.dateTime.toISOString().split("T")[0],
           minutes: log.readingMinutes,
         })
