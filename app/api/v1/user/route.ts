@@ -121,10 +121,12 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const data = logs.map((log) => ({
-      date: log.dateTime.toISOString().split("T")[0],
-      metTarget: log.metTarget,
-    }));
+    const data: { date: string; metTarget: boolean }[] = logs.map(
+      (log: { dateTime: Date; metTarget: boolean }) => ({
+        date: log.dateTime.toISOString().split("T")[0],
+        metTarget: log.metTarget,
+      })
+    );
 
     return new Response(JSON.stringify({ streaks: data }), {
       status: 200,
