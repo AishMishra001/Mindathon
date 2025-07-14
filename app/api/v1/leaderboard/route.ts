@@ -37,18 +37,28 @@ export async function GET(req: NextRequest) {
       });
 
       const userMap: Map<string, string> = new Map(
-        users.map((user : { id : string , name : string | null}) => [user.id, user.name || "Unnamed"])
+        users.map((user: { id: string; name: string | null }) => [
+          user.id,
+          user.name || "Unnamed",
+        ])
       );
 
       const leaderboard: {
         userId: string;
         name: string | undefined;
         totalReadingMinutes: number;
-      }[] = grouped.map((entry) => ({
-        userId: entry.userId,
-        name: userMap.get(entry.userId),
-        totalReadingMinutes: entry._sum.readingMinutes ?? 0,
-      }));
+      }[] = grouped.map(
+        (entry: {
+          userId: string;
+          _sum: {
+            readingMinutes: number | null;
+          };
+        }) => ({
+          userId: entry.userId,
+          name: userMap.get(entry.userId),
+          totalReadingMinutes: entry._sum.readingMinutes ?? 0,
+        })
+      );
 
       return new Response(JSON.stringify({ leaderboard }), {
         status: 200,
