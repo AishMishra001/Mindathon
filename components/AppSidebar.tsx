@@ -1,10 +1,9 @@
-"use client"
+"use client";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
@@ -16,21 +15,14 @@ import {
 import {
   Award,
   BookOpenCheck,
-  ChevronUp,
   Home,
   Lightbulb,
-  Plus,
   Trophy,
   User2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { useSession } from "next-auth/react";
 
 const items = [
   {
@@ -41,12 +33,12 @@ const items = [
   {
     title: "Input",
     url: "/user/dashboard/input",
-    icon: BookOpenCheck ,
+    icon: BookOpenCheck,
   },
   {
     title: "Leaderboard",
     url: "/user/dashboard/leaderboard",
-    icon: Trophy ,
+    icon: Trophy,
   },
   {
     title: "Test",
@@ -55,12 +47,16 @@ const items = [
   },
   {
     title: "Book Suggestions",
-    url: "/user/dashboard/suggestions",
+    url: "/user/dashboard/suggestion",
     icon: Lightbulb,
   },
 ];
 
 export function AppSidebar() {
+  const { data: session } = useSession();
+
+  const username = session?.user?.name;
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="py-4 ">
@@ -101,12 +97,6 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Projects</SidebarGroupLabel>
-          <SidebarGroupAction>
-            <Plus/> <span className="sr-only">Add Project</span>
-            </SidebarGroupAction> 
-        </SidebarGroup>
       </SidebarContent>
 
       <SidebarSeparator />
@@ -114,18 +104,9 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> Aish Mishra <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Account</DropdownMenuItem>
-                <DropdownMenuItem>Setting</DropdownMenuItem>
-                <DropdownMenuItem>Signout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <SidebarMenuButton>
+              <User2 /> {username} 
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

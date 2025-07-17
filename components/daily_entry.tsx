@@ -54,7 +54,7 @@ function FromInputField() {
     });
 
     try {
-      await axios.post("https://mindathon.vercel.app/api/v1/user", {
+      await axios.post("/api/v1/user", {
         userId,
         readingBook,
         readingTopic,

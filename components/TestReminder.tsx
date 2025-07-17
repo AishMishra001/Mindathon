@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
 import { differenceInDays, isAfter, isBefore, format } from "date-fns";
@@ -11,34 +11,39 @@ interface TestInfo {
 
 export default function TestReminder() {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [progress, setProgress] = useState<number | null>(null); // 🟢 NEW
 
-  // Test dates
   const tests: TestInfo[] = [
     {
-      date: new Date(2025, 6, 30), // July 30, 2025
+      date: new Date(2025, 6, 30),
       name: "Mid-Marathon Test",
       description: "Halfway checkpoint assessment",
     },
     {
-      date: new Date(2025, 7, 15), // August 15, 2025
+      date: new Date(2025, 7, 15),
       name: "Final Marathon Test",
       description: "Ultimate challenge assessment",
     },
   ];
 
-  const marathonStart = new Date(2025, 6, 15); // July 15, 2025
-  const marathonEnd = new Date(2025, 7, 15); // August 15, 2025
+  const marathonStart = new Date(2025, 6, 17);
+  const marathonEnd = new Date(2025, 7, 17);
 
-  // Update current date every day
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentDate(new Date());
-    }, 1000 * 60 * 60 * 24); // Update daily
+    const now = new Date();
+    setCurrentDate(now);
 
-    return () => clearInterval(timer);
+    const nowTime = now.getTime();
+    const start = marathonStart.getTime();
+    const end = marathonEnd.getTime();
+
+    const calculatedProgress = Math.min(
+      100,
+      Math.max(0, ((nowTime - start) / (end - start)) * 100)
+    );
+    setProgress(calculatedProgress);
   }, []);
 
-  // Find the next upcoming test
   const getNextTest = () => {
     const now = new Date();
     return tests.find((test) => isAfter(test.date, now)) || null;
@@ -49,7 +54,6 @@ export default function TestReminder() {
     ? differenceInDays(nextTest.date, currentDate)
     : null;
 
-  // Determine current phase
   const getPhase = () => {
     const now = new Date();
     if (isBefore(now, marathonStart)) return "before";
@@ -80,8 +84,8 @@ export default function TestReminder() {
         </div>
 
         <div className="flex-1 flex flex-col justify-center items-center space-y-4">
-          <div className="text-center">
-            <div className="text-3xl sm:text-4xl font-bold text-blue-500 mb-2">
+          <div className="text-center bg-black">
+            <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
               {daysUntilStart}
             </div>
             <div className="text-sm sm:text-base text-muted-foreground">
@@ -220,22 +224,14 @@ export default function TestReminder() {
           <span>Marathon Progress</span>
           <span>{format(marathonEnd, "MMM do")}</span>
         </div>
-        <div className="w-full bg-muted rounded-full h-2">
-          <div
-            className="bg-primary h-2 rounded-full transition-all duration-300"
-            style={{
-              width: `${Math.min(
-                100,
-                Math.max(
-                  0,
-                  ((currentDate.getTime() - marathonStart.getTime()) /
-                    (marathonEnd.getTime() - marathonStart.getTime())) *
-                    100
-                )
-              )}%`,
-            }}
-          />
-        </div>
+        {progress !== null && (
+          <div className="w-full bg-muted rounded-full h-2">
+            <div
+              className="bg-primary h-2 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

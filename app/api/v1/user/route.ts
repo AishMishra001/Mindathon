@@ -1,11 +1,13 @@
+import { authOptions } from "@/app/lib/authOptions";
 import { prisma } from "@/app/lib/prisma";
+import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 
 type ReadingLogRequest = {
   readingBook: string;
   readingTopic: string;
   readingMinutes: number;
-  dateTime: string; // ISO string from client
+  dateTime: string;
   learning: string;
   questions: string;
   userId: string;
@@ -13,9 +15,18 @@ type ReadingLogRequest = {
 };
 
 export async function POST(req: NextRequest) {
-  try {
-    const data: ReadingLogRequest = await req.json();
+  const session = await getServerSession(authOptions);
 
+  if (!session || !session.user?.id) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+    });
+  }
+
+  const userId = session.user.id;
+
+  try {
+    const data: Omit<ReadingLogRequest, "userId"> = await req.json();
     const {
       readingBook,
       readingTopic,
@@ -23,59 +34,47 @@ export async function POST(req: NextRequest) {
       dateTime,
       learning,
       questions,
-      userId,
       metTarget,
     } = data;
 
     const inputDate = new Date(dateTime);
-
     const startOfDay = new Date(inputDate);
     startOfDay.setHours(0, 0, 0, 0);
-
     const endOfDay = new Date(inputDate);
     endOfDay.setHours(23, 59, 59, 999);
 
     const existingLog = await prisma.readingLog.findFirst({
       where: {
         userId,
-        dateTime: {
-          gte: startOfDay,
-          lt: endOfDay,
-        },
+        dateTime: { gte: startOfDay, lt: endOfDay },
       },
     });
 
-    let log;
-
-    if (existingLog) {
-      log = await prisma.readingLog.update({
-        where: { id: existingLog.id },
-        data: {
-          readingBook,
-          readingTopic,
-          readingMinutes,
-          dateTime: inputDate,
-          learning,
-          questions,
-          metTarget,
-        },
-      });
-    } else {
-      log = await prisma.readingLog.create({
-        data: {
-          user: {
-            connect: { id: userId },
+    const log = existingLog
+      ? await prisma.readingLog.update({
+          where: { id: existingLog.id },
+          data: {
+            readingBook,
+            readingTopic,
+            readingMinutes,
+            dateTime: inputDate,
+            learning,
+            questions,
+            metTarget,
           },
-          readingBook,
-          readingTopic,
-          readingMinutes,
-          dateTime: inputDate,
-          learning,
-          questions,
-          metTarget,
-        },
-      });
-    }
+        })
+      : await prisma.readingLog.create({
+          data: {
+            user: { connect: { id: userId } },
+            readingBook,
+            readingTopic,
+            readingMinutes,
+            dateTime: inputDate,
+            learning,
+            questions,
+            metTarget,
+          },
+        });
 
     return new Response(
       JSON.stringify({
@@ -84,49 +83,39 @@ export async function POST(req: NextRequest) {
       }),
       {
         status: existingLog ? 200 : 201,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       }
     );
   } catch (error: any) {
     console.error("Error handling request:", error);
     return new Response(
-      JSON.stringify({
-        error: error?.message || "Invalid request",
-      }),
-      {
-        status: 400,
-      }
+      JSON.stringify({ error: error.message || "Invalid request" }),
+      { status: 400 }
     );
   }
 }
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
+  const session = await getServerSession(authOptions);
 
-  if (!userId) {
-    return new Response(JSON.stringify({ error: "Missing userId" }), {
-      status: 400,
+  if (!session || !session.user?.id) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
     });
   }
+
+  const userId = session.user.id;
 
   try {
     const logs = await prisma.readingLog.findMany({
       where: { userId },
-      select: {
-        dateTime: true,
-        metTarget: true,
-      },
+      select: { dateTime: true, metTarget: true },
     });
 
-    const data: { date: string; metTarget: boolean }[] = logs.map(
-      (log: { dateTime: Date; metTarget: boolean }) => ({
-        date: log.dateTime.toISOString().split("T")[0],
-        metTarget: log.metTarget,
-      })
-    );
+    const data = logs.map((log) => ({
+      date: log.dateTime.toISOString().split("T")[0],
+      metTarget: log.metTarget,
+    }));
 
     return new Response(JSON.stringify({ streaks: data }), {
       status: 200,

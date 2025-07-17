@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
@@ -13,18 +13,17 @@ import {
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { SidebarTrigger } from "./ui/sidebar";
-
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
 
-
-  
-  const {setTheme} = useTheme() ; 
+  const { setTheme } = useTheme();
 
   return (
     <nav className="flex p-4 items-center justify-between ">
       {/* LEFT  */}
-      <SidebarTrigger/>
+      <SidebarTrigger />
       {/* RIGHT  */}
       <div className="flex items-center gap-4">
         <Link href="/">Dashboard</Link>
@@ -60,8 +59,11 @@ const Navbar = () => {
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User className="h-2 w-2 mr-2" /> Profile
+            <DropdownMenuItem
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => router.push("/user/dashboard/profile")}
+            >
+              <User className="h-4 w-4" /> Profile
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Settings className="h-2 w-2 mr-2" /> Settings
