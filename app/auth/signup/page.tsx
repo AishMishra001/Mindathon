@@ -1,9 +1,11 @@
 "use client";
-import { FaGoogle } from "react-icons/fa";
+
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function SignInPage() {
+export default function SignUpPage() {
+  const router = useRouter();
 
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -16,22 +18,19 @@ export default function SignInPage() {
     e.preventDefault();
 
     const isAdmin = adminPassword === "Keshav";
-    const callbackUrl = isAdmin
-      ? "/user/dashboard?admin=true"
-      : "/user/dashboard";
 
     const res = await signIn("credentials", {
-      firstname , 
-      lastname ,
+      firstname,
+      lastname,
       email,
       password,
       adminpassword: adminPassword,
-      redirect: true, // Let NextAuth handle the redirect
-      callbackUrl,
+      redirect: true,
+      callbackUrl: isAdmin ? "/admin/dashboard" : "/user/dashboard",
     });
 
     if (res?.error) {
-      setError("Invalid credentials");
+      setError("User already exists or invalid credentials.");
     }
   };
 
@@ -39,14 +38,13 @@ export default function SignInPage() {
     <div className="flex items-center justify-center h-screen bg-primary-foreground">
       <div className="bg-black p-8 rounded-lg shadow-md w-[350px]">
         <h1 className="text-white text-center text-xl mb-2">Welcome to Mindathon</h1>
-        <h2 className="text-3xl font-semilight mb-4 text-center">Sign In</h2>
-
+        <h2 className="text-3xl font-semilight mb-4 text-center">Sign Up</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
-            placeholder="Fistname"
+            placeholder="Firstname"
             className="w-full border px-3 py-2 rounded"
             value={firstname}
             onChange={(e) => setFirstname(e.target.value)}
@@ -85,23 +83,21 @@ export default function SignInPage() {
           />
           <button
             type="submit"
-            className="w-full bg-black text-white py-2 rounded cursor-pointer"
+            className="w-full bg-white text-black py-2 rounded"
           >
-            Sign In with Credentials
+            Sign Up
           </button>
         </form>
 
-        <hr className="my-6" />
-
-        <button
-          onClick={() => signIn("google", { callbackUrl: "/user/dashboard" })}
-          className="w-full border py-2 rounded cursor-pointer"
-        >
-          <div className="flex justify-center items-center gap-2">
-
-          Sign In with <FaGoogle className="text-white"/>
-          </div>
-        </button>
+        <p className="text-center text-white mt-4">
+          Already a user?{" "}
+          <span
+            onClick={() => router.push("/auth/signin")}
+            className="text-blue-400 underline cursor-pointer"
+          >
+            Sign In
+          </span>
+        </p>
       </div>
     </div>
   );

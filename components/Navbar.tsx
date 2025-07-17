@@ -75,7 +75,7 @@ const Navbar = () => {
                 await signOut({
                   redirect: false,
                 });
-                router.push("/api/auth/signin");
+                router.push("/auth/signin");
               }}
             >
               <LogOut className="h-2 w-2 mr-2" /> Logout
