@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { SidebarTrigger } from "./ui/sidebar";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const Navbar = () => {
   const router = useRouter();
@@ -68,7 +69,15 @@ const Navbar = () => {
             <DropdownMenuItem>
               <Settings className="h-2 w-2 mr-2" /> Settings
             </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive">
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={async () => {
+                await signOut({
+                  redirect: false,
+                });
+                router.push("/api/auth/signin");
+              }}
+            >
               <LogOut className="h-2 w-2 mr-2" /> Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
