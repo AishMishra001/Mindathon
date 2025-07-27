@@ -16,12 +16,6 @@ import { ChevronDownIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 export default function DailyEntry() {
-  return (
-      <FromInputField />
-  );
-}
-
-function FromInputField() {
   const { data: session, status } = useSession();
   if (status === "loading") return <p>Loading...</p>;
   if (!session?.user?.id) return <p>User not authenticated.</p>;

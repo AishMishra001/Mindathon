@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/AppSidebar";
+import { AdminAppSidebar } from "@/components/AppSidebar-Admin";
 import Navbar from "@/components/Navbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
@@ -17,7 +17,7 @@ export default function UserDashboardLayout({
         disableTransitionOnChange
       >
         <SidebarProvider>
-          <AppSidebar />
+          <AdminAppSidebar />
 
           <main className="flex-1 flex flex-col w-full">
             <Navbar />

@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import SessionWrapper from "@/components/SessionWrapper";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./lib/authOptions";
+import {SpeedInsights} from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,9 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionWrapper session={session}>
-          {children} <Analytics />
+          {children}
+          <Analytics />
+          <SpeedInsights />
         </SessionWrapper>
       </body>
     </html>

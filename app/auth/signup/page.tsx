@@ -26,7 +26,7 @@ export default function SignUpPage() {
       password,
       adminpassword: adminPassword,
       redirect: true,
-      callbackUrl: isAdmin ? "/admin/dashboard" : "/user/dashboard",
+      callbackUrl: isAdmin ? "/admin/dashboard?admin=true" : "/user/dashboard",
     });
 
     if (res?.error) {
