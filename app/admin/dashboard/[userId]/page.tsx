@@ -4,11 +4,17 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-export default async function UserLogs({
-  params,
-}: {
-  params: { userId: string };
-}) {
+type Props = {
+  params: Promise<{
+    userId: string;
+  }>;
+};
+
+export default async function UserLogs({ params }: Props) {
+  // Await the params Promise first
+  const resolvedParams = await params;
+  const { userId } = resolvedParams;
+  
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.isAdmin) {
@@ -46,14 +52,14 @@ export default async function UserLogs({
   }
 
   const user = await prisma.user.findUnique({
-    where: { id: params.userId },
+    where: { id: userId },
     select: { name: true, email: true },
   });
 
   if (!user) return notFound();
 
   const logs = await prisma.readingLog.findMany({
-    where: { userId: params.userId },
+    where: { userId: userId },
     orderBy: { dateTime: "desc" },
   });
 
@@ -63,12 +69,12 @@ export default async function UserLogs({
     logs.length > 0 ? Math.round((targetsMetCount / logs.length) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-primary-foreground from-gray-900 via-slate-900 to-black">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black">
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <div className="mb-6">
           <Link
-            href="/admin/dashboard/"
+            href="/admin/dashboard/participants"
             className="inline-flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-200"
           >
             <svg
@@ -132,11 +138,11 @@ export default async function UserLogs({
         </div>
 
         {/* Logs Section */}
-        <div className="bg-primary-foreground border-2 border-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-gray-200/50">
+        <div className="bg-gray-800/60 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-700/50 overflow-hidden">
+          <div className="p-6 border-b border-gray-700/50">
             <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
               <svg
-                className="w-6 h-6 text-blue-500"
+                className="w-6 h-6 text-blue-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -154,9 +160,9 @@ export default async function UserLogs({
 
           {logs.length === 0 ? (
             <div className="p-12 text-center">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-24 h-24 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className="w-12 h-12 text-gray-400"
+                  className="w-12 h-12 text-gray-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -169,7 +175,7 @@ export default async function UserLogs({
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              <h3 className="text-xl font-semibold text-gray-300 mb-2">
                 No Reading Logs Found
               </h3>
               <p className="text-gray-500">
@@ -182,7 +188,7 @@ export default async function UserLogs({
                 {logs.map((log) => (
                   <div
                     key={log.id}
-                    className="bg-gray-800/60 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-200 overflow-hidden border border-gray-700/50 hover:border-blue-500/50"
+                    className="bg-gray-700/50 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 overflow-hidden border border-gray-600/50 hover:border-blue-500/50"
                   >
                     {/* Header */}
                     <div className="bg-gradient-to-r from-gray-800/80 to-gray-700/80 px-6 py-4 border-b border-gray-600/50">
