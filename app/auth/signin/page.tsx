@@ -13,15 +13,25 @@ export default function SignInPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // signIn without redirect
     const res = await signIn("credentials", {
       email,
       password,
-      redirect: true,
-      callbackUrl: "/user/dashboard", // Redirect will be handled based on user type server-side
+      redirect: false,
     });
 
     if (res?.error) {
       setError("Invalid credentials.");
+    } else {
+      // Fetch session to get user role
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+
+      if (session?.user?.isAdmin === true ) {
+        router.push("/admin/dashboard?admin=true");
+      } else {
+        router.push("/user/dashboard");
+      }
     }
   };
 
