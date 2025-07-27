@@ -74,7 +74,7 @@ export default async function UserLogs({ params }: Props) {
         {/* Back Button */}
         <div className="mb-6">
           <Link
-            href="/admin/dashboard/participants"
+            href="/admin/dashboard/"
             className="inline-flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-200"
           >
             <svg
